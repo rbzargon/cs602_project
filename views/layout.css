@@ -1,0 +1,17 @@
+body {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+nav {
+    display: flex;
+    justify-content: space-around;
+}
+
+button {
+    border-radius: 4px;
+}
+
+nav button {
+    font-size: 1.5em;
+}
