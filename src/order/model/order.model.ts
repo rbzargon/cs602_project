@@ -1,6 +1,6 @@
 import { IsMongoId, IsNumber } from "class-validator";
 import { User } from "src/user/model/user.model";
-import { Product } from "src/product/model/product.model";
+import { Product } from "src/product/model/product.interface";
 
 export class Order {
     @IsMongoId()
