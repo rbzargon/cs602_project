@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Render } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Header, Param, Post, Put, Render } from '@nestjs/common';
 import { CreateProductDto } from "./model/create-product.dto";
 import { Product } from './model/product.interface';
 import { UpdateProductDto } from "./model/update-product.dto";
@@ -10,10 +10,10 @@ export class ProductController {
     constructor(private readonly productService: ProductService) { }
 
     @Get()
+    @Header('Content-Type', 'text/html')
     @Render('product/index')
     async getAll(): Promise<{ products: Product[] }> {
         const products = await this.productService.findAll();
-        console.log('PRODUCTS', products);
         return { products };
     }
 

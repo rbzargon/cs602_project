@@ -4,9 +4,13 @@ block content
 
     each p in products
         .card
-            
-        p= p.vendorId
-        p= p.name
-        p= p.description
-        p= p.price
-        p= p.quantity
+            h2 #{p.name} - $#{p.price}
+            p=p.description
+            p Available: #{p.quantity}
+            if p.quantity > 0
+                form(action="order", method="post")
+                    input#customerId(type="hidden" value="#{currentUserId}")
+                    input#productId(type="hidden" value="#{p._id}")
+                    label(for="quantity") Quantity
+                    input#quantity(type="number", name="quantity", value=1, min=1)
+                    button(type="submit") Order
