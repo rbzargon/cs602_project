@@ -14,4 +14,4 @@ export const OrderSchema = new Schema({
         required: true,
         min: 1
     }
-});
+}, { collection: 'order' });

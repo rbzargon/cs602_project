@@ -1,10 +1,8 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Render } from '@nestjs/common';
+import { CreateProductDto } from "./model/create-product.dto";
 import { Product } from './model/product.interface';
 import { UpdateProductDto } from "./model/update-product.dto";
-import { CreateProductDto } from "./model/create-product.dto";
 import { ProductService } from './product.service';
-import { ProductMongoose } from './model/product.mongoose.model';
-import { Document } from 'mongoose';
 
 @Controller('/product')
 export class ProductController {
@@ -15,6 +13,7 @@ export class ProductController {
     @Render('product/index')
     async getAll(): Promise<{ products: Product[] }> {
         const products = await this.productService.findAll();
+        console.log('PRODUCTS', products);
         return { products };
     }
 

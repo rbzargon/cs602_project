@@ -26,4 +26,4 @@ export const ProductSchema = new Schema({
         required: true,
         min: 0
     }
-});
+}, { collection: 'product' });
