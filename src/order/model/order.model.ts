@@ -1,5 +1,5 @@
 import { IsMongoId, IsNumber } from "class-validator";
-import { User } from "src/user/user.model";
+import { User } from "src/user/model/user.model";
 import { Product } from "src/product/model/product.model";
 
 export class Order {

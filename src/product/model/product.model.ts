@@ -1,5 +1,5 @@
 import { IsMongoId, IsString, IsNotEmpty, IsNumber } from 'class-validator';
-import { User } from 'src/user/user.model';
+import { User } from 'src/user/model/user.model';
 
 export class Product {
     @IsMongoId()
