@@ -12,9 +12,10 @@ export class ProductController {
     @Get()
     @Header('Content-Type', 'text/html')
     @Render('product/index')
-    async getAll(): Promise<{ products: Product[] }> {
+    async getAll(): Promise<{ products: Product[], currentUserId: string }> {
         const products = await this.productService.findAll();
-        return { products };
+        //TODO: replace hard-coded currentUserId
+        return { products, currentUserId: '5e5b07f66a2f5c3066cacc4b' };
     }
 
     @Get(':id')

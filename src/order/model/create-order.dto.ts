@@ -1,6 +1,7 @@
-import { IsMongoId, IsNumberString, Min } from 'class-validator';
+import { IsMongoId, IsNumber, Min } from 'class-validator';
 import { Product } from "src/product/model/product.interface";
 import { User } from "src/user/model/user.interface";
+import { Type } from "class-transformer";
 
 
 export class CreateOrderDto {
@@ -10,7 +11,8 @@ export class CreateOrderDto {
     @IsMongoId()
     productId: Product['_id'];
 
-    @IsNumberString()
-    @Min(1)
+    @IsNumber()
+    @Type(() => Number)
+    @Min(0)
     quantity: number;
 }

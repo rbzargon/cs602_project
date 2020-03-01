@@ -1,0 +1,14 @@
+extends ../layout
+
+block content
+
+    each o in orders
+        .card
+            h2 Order #{o._id}
+            p Customer: #{o.customerId}
+            p Product: #{o.productId}
+            p Quantity: #{o.quantity}
+            form(action="order", method="put")
+                input#productId(type="hidden" value="#{o.productId}")
+                input#quantity(type="hidden", value="#{o.quantity}")
+                input(type="submit" value="Cancel Order")
