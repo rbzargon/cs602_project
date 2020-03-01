@@ -3,7 +3,7 @@ import { Schema } from 'mongoose';
 export const ProductSchema = new Schema({
     vendorId: {
         type: Schema.Types.ObjectId,
-        required: true
+        required: true,
     },
     name: {
         type: Schema.Types.String,
