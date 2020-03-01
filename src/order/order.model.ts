@@ -4,13 +4,13 @@ import { Product } from "src/product/model/product.model";
 
 export class Order {
     @IsMongoId()
-    id: string;
+    _id: string;
 
     @IsMongoId()
-    customerId: User['id'];
+    customerId: User['_id'];
 
     @IsMongoId()
-    productId: Product['id'];
+    productId: Product['_id'];
 
     @IsNumber()
     quantity: number;

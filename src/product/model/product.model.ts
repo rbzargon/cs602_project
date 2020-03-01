@@ -3,10 +3,10 @@ import { User } from 'src/user/user.model';
 
 export class Product {
     @IsMongoId()
-    id: string;
+    _id: string;
     
     @IsMongoId()
-    vendorId: User['id'];
+    vendorId: User['_id'];
 
     @IsString()
     @IsNotEmpty()

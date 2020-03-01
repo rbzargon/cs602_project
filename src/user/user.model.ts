@@ -1,15 +1,21 @@
-import { IsMongoId, IsEmail, IsString, IsBoolean } from "class-validator";
+import { IsMongoId, IsEmail, IsString, IsBoolean, IsNotEmpty } from "class-validator";
 
 export class User {
     
     @IsMongoId()
-    id: string;
+    _id: string;
+
+    @IsString()
+    @IsNotEmpty()
+    name: string;
 
     @IsEmail()
+    @IsNotEmpty()
     email: string;
 
     @IsString()
-    password: string;
+    @IsNotEmpty()
+    passwordHash: string;
 
     @IsBoolean()
     isVendor: boolean;
