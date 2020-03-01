@@ -1,0 +1,10 @@
+extends ../layout
+
+block content
+
+    each p in products
+        p= p.vendorId
+        p= p.name
+        p= p.description
+        p= p.price
+        p= p.quantity
