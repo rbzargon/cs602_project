@@ -3,6 +3,8 @@ extends ../layout
 block content
 
     each p in products
+        .card
+            
         p= p.vendorId
         p= p.name
         p= p.description
