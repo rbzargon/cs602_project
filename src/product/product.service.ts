@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Product } from './model/product.interface';
-import { UpdateProductDto } from './model/update-product.dto';
 
 @Injectable()
 export class ProductService {
@@ -12,6 +11,17 @@ export class ProductService {
 
     async findAll(): Promise<Product[]> {
         return this.productModel.find().exec();
+    }
+
+    async findByText(searchText: string): Promise<Product[]> {
+        //possibly help prevent nosql injection
+        searchText = escape(searchText);
+        //find and sort by match on the text index (db configuration)
+        //which includes both the title and description
+        return this.productModel.find(
+            { $text: { $search: searchText } },
+            { score: { $meta: 'textScore' } },
+        ).sort({ score: { $meta: 'textScore' } });
     }
 
     async modifyRelativeQuantity(id: string, quantity: number) {

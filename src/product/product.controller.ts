@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Header, Param, Post, Put, Render } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Header, Param, Post, Put, Render, Query } from '@nestjs/common';
 import { CreateProductDto } from "./model/create-product.dto";
 import { Product } from './model/product.interface';
 import { UpdateProductDto } from "./model/update-product.dto";
@@ -12,8 +12,10 @@ export class ProductController {
     @Get()
     @Header('Content-Type', 'text/html')
     @Render('product/index')
-    async getAll(): Promise<{ products: Product[], currentUserId: string }> {
-        const products = await this.productService.findAll();
+    async getAll(@Query('q') searchText): Promise<{ products: Product[], currentUserId: string; }> {
+        searchText = searchText.trim();
+        const products = searchText ? await this.productService.findByText(searchText)
+                                    : await this.productService.findAll();
         //TODO: replace hard-coded currentUserId
         return { products, currentUserId: '5e5b07f66a2f5c3066cacc4b' };
     }
