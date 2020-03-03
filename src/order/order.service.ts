@@ -4,21 +4,26 @@ import { Model } from 'mongoose';
 import { Order } from './model/order.interface';
 import { CreateOrderDto } from './model/create-order.dto';
 import { Product } from 'src/product/model/product.interface';
+import { AppService } from 'src/app.service';
 
 @Injectable()
 export class OrderService {
     constructor(@InjectModel('Order') private readonly orderModel: Model<Order>) { }
 
     async findAllComplete(): Promise<Order[]> {
-        return this.orderModel.find({ completed: true }).exec();
+        const findOptions = AppService.currentUser.isAdmin ? { completed: true } : { completed: true, customerId: AppService.currentUser._id };
+        return this.orderModel.find(findOptions).populate('Product').exec();
     }
 
     async findAllIncomplete(): Promise<Order[]> {
-        return this.orderModel.find({ completed: { $ne: true } }).exec();
+        const findOptions = AppService.currentUser.isAdmin ? { completed: { $ne: true }  } : { completed: { $ne: true } , customerId: AppService.currentUser._id };
+        return this.orderModel.find(findOptions).populate('Product').exec();
     }
 
     async findWithProduct(findOptions = {}): Promise<Order[] & Product[]> {
-        //join and merge with product
+        // join and merge with product
+        // I was interested in trying this with mongo native syntax
+        // afterward I realized mongoose has this functionality with 'populate'
         return this.orderModel.aggregate([{
             $match: findOptions
         }, {

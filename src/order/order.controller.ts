@@ -20,6 +20,7 @@ export class OrderController {
     @Render('order/index')
     async findAllComplete(): Promise<{ orders: Order[]; currentUser: User }> {
         const completeOrders = await this.orderService.findAllComplete();
+        console.log(completeOrders);
         return { orders: completeOrders, currentUser: AppService.currentUser };
     }
 
