@@ -12,10 +12,10 @@ export class ProductController {
     @Get()
     @Header('Content-Type', 'text/html')
     @Render('product/index')
-    async getAll(@Query('q') searchText): Promise<{ products: Product[], currentUserId: string; }> {
+    async getAll(@Query('q') searchText = ''): Promise<{ products: Product[], currentUserId: string; }> {
         searchText = searchText.trim();
         const products = searchText ? await this.productService.findByText(searchText)
-                                    : await this.productService.findAll();
+            : await this.productService.findAll();
         //TODO: replace hard-coded currentUserId
         return { products, currentUserId: '5e5b07f66a2f5c3066cacc4b' };
     }

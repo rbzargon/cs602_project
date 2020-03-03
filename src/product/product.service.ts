@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Product } from './model/product.interface';
+import * as sanitize from 'mongo-sanitize';
 
 @Injectable()
 export class ProductService {
@@ -14,10 +15,11 @@ export class ProductService {
     }
 
     async findByText(searchText: string): Promise<Product[]> {
-        //possibly help prevent nosql injection
-        searchText = escape(searchText);
-        //find and sort by match on the text index (db configuration)
-        //which includes both the title and description
+        //help prevent nosql injection
+        searchText = sanitize(searchText);
+        //find and sort by match on the text index
+        //which includes both the title and description (compound index)
+        //see https://docs.mongodb.com/manual/core/index-text/#create-text-index
         return this.productModel.find(
             { $text: { $search: searchText } },
             { score: { $meta: 'textScore' } },

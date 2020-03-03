@@ -3,7 +3,7 @@ extends ../layout
 block content
     form(action="product" method="get")
         label(for="search") Filter by title/description
-        input#q(type="text" name="search")
+        input#q(type="text" name="q")
         input(type="submit" value="Go")
     each p in products
         .card
