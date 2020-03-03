@@ -1,0 +1,14 @@
+extends ../layout
+
+block content
+    h2 Total Price: $#{totalPrice}
+    each o in orders  
+        .card
+            p #{o.name} - #{o.price} x #{o.quantity}
+            p Price: #{o.price * o.quantity}
+            form(action="order", method="put")
+                label(for="quantity") Quantity
+                    input#quantity(type="number", name="quantity" value=o.quantity, min=1)
+                input#productId(type="hidden", value=o.productId)
+                input#submit(type="submit", value="Save")
+                
