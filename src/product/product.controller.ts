@@ -18,7 +18,6 @@ export class ProductController {
         searchText = searchText.trim();
         const products = searchText ? await this.productService.findByText(searchText)
             : await this.productService.findAll();
-        //TODO: replace hard-coded currentUserId
         return { products, currentUser: AppService.currentUser };
     }
 
