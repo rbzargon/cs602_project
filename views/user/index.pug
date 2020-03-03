@@ -1,0 +1,13 @@
+extends ../layout
+
+block content
+    each user in users
+        .card
+            p=user.name
+            p=user.email
+            if user.isAdmin
+                p Status: Admin
+            else
+                p Status: Customer    
+            a(href="/user/impersonate/" + user._id)
+                button Impersonate

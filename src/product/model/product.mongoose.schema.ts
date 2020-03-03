@@ -2,6 +2,7 @@ import { Schema } from 'mongoose';
 
 export const ProductSchema = new Schema({
     vendorId: {
+        ref: 'User',
         type: Schema.Types.ObjectId,
         required: true,
     },

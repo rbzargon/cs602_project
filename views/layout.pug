@@ -1,12 +1,16 @@
 html
     head(title='CS602 - King')
-        link(rel='stylesheet', type='text/css', href='./layout.css')
-        link(rel='stylesheet', type='text/css', href='./card.css')
+        link(rel='stylesheet', type='text/css', href='/layout.css')
+        link(rel='stylesheet', type='text/css', href='/card.css')
     body
         h1 Storefront - CS602 King
+        if currentUser
+            h2 Hello #{currentUser.name}
         nav
             a(href="/product")
                 button Products
+            a(href="/order/cart")
+                button Cart
             a(href="/order")
                 button Orders
             a(href="/user")

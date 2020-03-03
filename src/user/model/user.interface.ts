@@ -5,5 +5,6 @@ export interface User extends Document {
     name: string;
     email: string;
     passwordHash: string;
-    isVendor: boolean;
+    isAdmin: boolean;
+    isCurrentUser?: boolean;
 }

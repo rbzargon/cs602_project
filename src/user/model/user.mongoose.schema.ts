@@ -19,8 +19,8 @@ export const UserSchema = new Schema({
         trim: true,
         minlength: 1
     },
-    isVendor: {
+    isAdmin: {
         type: Schema.Types.Boolean,
         required: true,
     }
-});
+}, { collection: 'user' });

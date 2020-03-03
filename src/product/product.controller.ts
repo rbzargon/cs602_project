@@ -3,6 +3,8 @@ import { CreateProductDto } from "./model/create-product.dto";
 import { Product } from './model/product.interface';
 import { UpdateProductDto } from "./model/update-product.dto";
 import { ProductService } from './product.service';
+import { AppService } from 'src/app.service';
+import { User } from 'src/user/model/user.interface';
 
 @Controller('/product')
 export class ProductController {
@@ -12,12 +14,12 @@ export class ProductController {
     @Get()
     @Header('Content-Type', 'text/html')
     @Render('product/index')
-    async getAll(@Query('q') searchText = ''): Promise<{ products: Product[], currentUserId: string; }> {
+    async getAll(@Query('q') searchText = ''): Promise<{ products: Product[], currentUser: User; }> {
         searchText = searchText.trim();
         const products = searchText ? await this.productService.findByText(searchText)
             : await this.productService.findAll();
         //TODO: replace hard-coded currentUserId
-        return { products, currentUserId: '5e5b07f66a2f5c3066cacc4b' };
+        return { products, currentUser: AppService.currentUser };
     }
 
     @Get(':id')
