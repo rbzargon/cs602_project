@@ -4,3 +4,7 @@
     margin: 10px;
     padding: 10px;
 }
+
+.card input {
+    margin-left: 5px;
+}

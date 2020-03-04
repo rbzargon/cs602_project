@@ -4,11 +4,13 @@ block content
     h2 Total Price: $#{totalPrice}
     each o in orders  
         .card
-            p #{o.name} - #{o.price} x #{o.quantity}
-            p Price: #{o.price * o.quantity}
-            form(action="order", method="put")
+            h2 #{o.product.name} - $#{o.product.price} x #{o.quantity}
+            p Item(s) price: #{o.product.price * o.quantity}
+            p Maximum available: #{o.product.quantity + o.quantity}
+            form(action="order", method="post")
                 label(for="quantity") Quantity
-                    input#quantity(type="number", name="quantity" value=o.quantity, min=1)
-                input#product(type="hidden", value=o.product)
+                    input#quantity(type="number", name="quantity" value=o.quantity, min=1, max=(o.product.quantity + o.quantity))
+                input#order(type="hidden", name="order", value=o._id)
                 input#submit(type="submit", value="Save")
-                
+            form(action=("order/delete/"+ o._id) method="post")
+                input#delete(type="submit", value="Remove item")

@@ -5,10 +5,9 @@ block content
     each o in orders
         .card
             h2 Order #{o._id}
-            p Product: #{o.Product.name}
+            p Product: #{o.product.name}
+            p Price: #{o.product.price}
             p Quantity: #{o.quantity}
-            //- would add the price but it could change in the future
-            //- same could also be said of the name
-            //- when completed the order should memorialize the name/price
-            //- in this case we would want non-mutating values for the product
-            //- as opposed to the cart view
+            //- theoretically the price/name could change in the future
+            //- a more robust application might memorialize the name/price
+            //- in the order on completion
