@@ -9,10 +9,11 @@ html
         nav
             a(href="/product")
                 button Products
-            a(href="/order/cart")
-                button Cart
-            a(href="/order")
-                button Orders
+            if currentUser
+                a(href="/order/cart")
+                    button Cart
+                a(href="/order")
+                    button Orders
             a(href="/user")
                 button Accounts
 
