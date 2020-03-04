@@ -31,34 +31,6 @@ export class OrderService {
         return this.orderModel.find(findOptions).populate('product').exec() as unknown as Order[] & { product: Product; }[];
     }
 
-    async findWithProduct(findOptions = {}): Promise<Order[] & Product[]> {
-        // join and merge with product
-        // I was interested in trying this with mongo native syntax
-        // afterward I realized mongoose has this functionality with 'populate'
-        return this.orderModel.aggregate([{
-            $match: findOptions
-        }, {
-            $lookup: {
-                from: 'product',
-                localField: 'product',
-                foreignField: '_id',
-                as: 'product'
-            }
-        }, {
-            $replaceRoot: {
-                newRoot: {
-                    $mergeObjects: [{
-                        $arrayElemAt: ["$product", 0]
-                    }, '$$ROOT']
-                }
-            }
-        }, {
-            $project: {
-                product: 0
-            }
-        }]) as unknown as Order[] & Product[];
-    }
-
     async create(order: CreateOrderDto): Promise<Order> {
         return this.orderModel.create({ ...order });
     }

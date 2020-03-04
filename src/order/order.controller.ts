@@ -1,11 +1,11 @@
-import { Controller, Header, Get, Render, Post, Body, Res, Param } from '@nestjs/common';
+import { Body, Controller, Get, Header, Post, Render } from '@nestjs/common';
+import { AppService } from 'src/app.service';
+import { Product } from 'src/product/model/product.interface';
+import { ProductService } from 'src/product/product.service';
+import { User } from 'src/user/model/user.interface';
+import { CreateOrderDto } from './model/create-order.dto';
 import { Order } from './model/order.interface';
 import { OrderService } from './order.service';
-import { CreateOrderDto } from './model/create-order.dto';
-import { ProductService } from 'src/product/product.service';
-import { Product } from 'src/product/model/product.interface';
-import { AppService } from 'src/app.service';
-import { User } from 'src/user/model/user.interface';
 
 @Controller('order')
 export class OrderController {
@@ -20,7 +20,6 @@ export class OrderController {
     @Render('order/index')
     async findAllComplete(): Promise<{ orders: Order[]; currentUser: User }> {
         const completeOrders = await this.orderService.findAllCompleteWithProduct();
-        console.log(completeOrders);
         return { orders: completeOrders, currentUser: AppService.currentUser };
     }
 

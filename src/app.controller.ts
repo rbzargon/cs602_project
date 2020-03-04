@@ -1,4 +1,4 @@
-import { Controller, Get, Render, Redirect } from '@nestjs/common';
+import { Controller, Get, Redirect } from '@nestjs/common';
 import { AppService } from './app.service';
 
 
