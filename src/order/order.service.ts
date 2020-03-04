@@ -8,16 +8,27 @@ import { AppService } from 'src/app.service';
 
 @Injectable()
 export class OrderService {
-    constructor(@InjectModel('Order') private readonly orderModel: Model<Order>) { }
+    constructor(
+        @InjectModel('Order') private readonly orderModel: Model<Order>,
+        @InjectModel('Product') private readonly productModel: Model<Product>
+    ) { }
 
     async findAllComplete(): Promise<Order[]> {
-        const findOptions = AppService.currentUser.isAdmin ? { completed: true } : { completed: true, customerId: AppService.currentUser._id };
-        return this.orderModel.find(findOptions).populate('Product').exec();
+        if (!AppService.currentUser) return [];
+        // see all orders if admin, otherwise just your orders
+        const findOptions = AppService.currentUser.isAdmin ?
+            { completed: true } :
+            { completed: true, customer: AppService.currentUser._id };
+        return this.orderModel.find(findOptions).populate('product').exec();
     }
 
     async findAllIncomplete(): Promise<Order[]> {
-        const findOptions = AppService.currentUser.isAdmin ? { completed: { $ne: true }  } : { completed: { $ne: true } , customerId: AppService.currentUser._id };
-        return this.orderModel.find(findOptions).populate('Product').exec();
+        if (!AppService.currentUser) return [];
+        // see all cart items if admin, otherwise just your orders
+        const findOptions = AppService.currentUser.isAdmin ?
+            { completed: { $ne: true } } :
+            { completed: { $ne: true }, customer: AppService.currentUser._id };
+        return this.orderModel.find(findOptions).populate('product').exec();
     }
 
     async findWithProduct(findOptions = {}): Promise<Order[] & Product[]> {
@@ -29,7 +40,7 @@ export class OrderService {
         }, {
             $lookup: {
                 from: 'product',
-                localField: 'productId',
+                localField: 'product',
                 foreignField: '_id',
                 as: 'product'
             }

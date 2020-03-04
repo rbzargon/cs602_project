@@ -9,6 +9,6 @@ block content
             form(action="order", method="put")
                 label(for="quantity") Quantity
                     input#quantity(type="number", name="quantity" value=o.quantity, min=1)
-                input#productId(type="hidden", value=o.productId)
+                input#product(type="hidden", value=o.product)
                 input#submit(type="submit", value="Save")
                 

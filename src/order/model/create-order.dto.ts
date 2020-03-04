@@ -6,10 +6,10 @@ import { Type } from "class-transformer";
 
 export class CreateOrderDto {
     @IsMongoId()
-    customerId: User['_id'];
+    customer: User['_id'];
 
     @IsMongoId()
-    productId: Product['_id'];
+    product: Product['_id'];
 
     @IsNumber()
     @Type(() => Number)

@@ -38,7 +38,7 @@ export class OrderController {
     @Post()
     async create(@Body() order: CreateOrderDto) {
         await this.orderService.create(order);
-        await this.productService.modifyRelativeQuantity(order.productId, order.quantity);
+        await this.productService.modifyRelativeQuantity(order.product, order.quantity);
     }
 
 }

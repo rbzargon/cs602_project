@@ -1,12 +1,12 @@
 import { Schema } from 'mongoose';
 
 export const OrderSchema = new Schema({
-    customerId: {
+    customer: {
         ref: 'User',
         type: Schema.Types.ObjectId,
         required: true
     },
-    productId: {
+    product: {
         ref: 'Product',
         type: Schema.Types.ObjectId,
         required: true

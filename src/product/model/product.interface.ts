@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 
 export interface Product extends Document {
     _id: string;
-    vendorId: User['_id'];
+    vendor: User['_id'];
     name: string;
     description: string;
     price: number;

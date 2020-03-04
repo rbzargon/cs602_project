@@ -10,10 +10,11 @@ block content
             h2 #{p.name} - $#{p.price}
             p=p.description
             p Available: #{p.quantity}
-            if p.quantity > 0
-                form(action="order", method="post")
-                    input#customerId(type="hidden" name="customerId" value=currentUserId)
-                    input#productId(type="hidden" name="productId" value=p._id)
-                    label(for="quantity") Quantity
-                    input#quantity(type="number", name="quantity", value=1, min=1)
-                    input(type="submit" value="Order")
+            if currentUser
+                if p.quantity > 0
+                    form(action="order", method="post")
+                        input#customer(type="hidden" name="customer" value=currentUserId)
+                        input#product(type="hidden" name="product" value=p._id)
+                        label(for="quantity") Quantity
+                        input#quantity(type="number", name="quantity", value=1, min=1)
+                        input(type="submit" value="Order")

@@ -1,7 +1,7 @@
 import { Schema } from 'mongoose';
 
 export const ProductSchema = new Schema({
-    vendorId: {
+    vendor: {
         ref: 'User',
         type: Schema.Types.ObjectId,
         required: true,
