@@ -1,16 +1,34 @@
 extends ../layout
 
 block content
+    script(type='text/javascript').
+        function updateQuantity(elemIndex) {
+            const quantityElem = document.getElementById(`quantity${elemIndex}`);
+            const quantity = parseInt(quantityElem.value, 10);
+            const orderId = document.getElementById(`orderId${elemIndex}`).value;
+            if (quantity && orderId) {
+                console.log(quantity, orderId);
+                fetch('/order/cart', {
+                    method: 'PUT',
+                    body: {
+                        id: orderId,
+                        quantity
+                    }
+                }).then(() => {
+                    location.reload(true);
+                })
+            }
+        }
     h2 Total Price: $#{totalPrice}
-    each o in orders  
+    each o, i in orders  
         .card
-            h2 #{o.product.name} - $#{o.product.price} x #{o.quantity}
+            h3 #{o.product.name} - $#{o.product.price} x #{o.quantity}
             p Item(s) price: #{o.product.price * o.quantity}
             p Maximum available: #{o.product.quantity + o.quantity}
-            form(action="order", method="post")
-                label(for="quantity") Quantity
-                    input#quantity(type="number", name="quantity" value=o.quantity, min=1, max=(o.product.quantity + o.quantity))
-                input#order(type="hidden", name="order", value=o._id)
-                input#submit(type="submit", value="Save")
+            label(for="quantity") Quantity
+                input(id=("quantity" + i), type="number", name="quantity" value=o.quantity, min=1, max=(o.product.quantity + o.quantity))
+            input(id=("orderId" + i), type="hidden", name="order", value=o._id)
+            button(onclick=("updateQuantity(" + i + ")")) Change
             form(action=("order/delete/"+ o._id) method="post")
-                input#delete(type="submit", value="Remove item")
+                input(id=("delete" + i), type="submit", value="Remove item")
+            script(type="text/javascript")
