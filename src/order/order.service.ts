@@ -13,22 +13,22 @@ export class OrderService {
         @InjectModel('Product') private readonly productModel: Model<Product>
     ) { }
 
-    async findAllComplete(): Promise<Order[]> {
+    async findAllCompleteWithProduct(): Promise<Order[] & { product: Product; }[]> {
         if (!AppService.currentUser) return [];
         // see all orders if admin, otherwise just your orders
         const findOptions = AppService.currentUser.isAdmin ?
             { completed: true } :
             { completed: true, customer: AppService.currentUser._id };
-        return this.orderModel.find(findOptions).populate('product').exec();
+        return this.orderModel.find(findOptions).populate('product').exec() as unknown as Order[] & { product: Product; }[];
     }
 
-    async findAllIncomplete(): Promise<Order[]> {
+    async findAllIncompleteWithProduct(): Promise<Order[] & { product: Product; }[]> {
         if (!AppService.currentUser) return [];
         // see all cart items if admin, otherwise just your orders
         const findOptions = AppService.currentUser.isAdmin ?
             { completed: { $ne: true } } :
             { completed: { $ne: true }, customer: AppService.currentUser._id };
-        return this.orderModel.find(findOptions).populate('product').exec();
+        return this.orderModel.find(findOptions).populate('product').exec() as unknown as Order[] & { product: Product; }[];
     }
 
     async findWithProduct(findOptions = {}): Promise<Order[] & Product[]> {

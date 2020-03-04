@@ -19,7 +19,7 @@ export class OrderController {
     @Header('Content-Type', 'text/html')
     @Render('order/index')
     async findAllComplete(): Promise<{ orders: Order[]; currentUser: User }> {
-        const completeOrders = await this.orderService.findAllComplete();
+        const completeOrders = await this.orderService.findAllCompleteWithProduct();
         console.log(completeOrders);
         return { orders: completeOrders, currentUser: AppService.currentUser };
     }
@@ -27,10 +27,10 @@ export class OrderController {
     @Get('cart')
     @Header('Content-Type', 'text/html')
     @Render('order/cart')
-    async findAllIncomplete(): Promise<{ orders: Order[] & Product[]; totalPrice: number; currentUser: User }> {
-        const pendingOrders = await this.orderService.findWithProduct({ completed: false });
-        const totalPrice = pendingOrders.reduce((total, order: Order & Product) => {
-            return total += order.price * order.quantity;
+    async findAllIncomplete(): Promise<{ orders: Order[]; totalPrice: number; currentUser: User }> {
+        const pendingOrders = await this.orderService.findAllIncompleteWithProduct();
+        const totalPrice = pendingOrders.reduce((total, order: Order & { product: Product }) => {
+            return total += order.product.price * order.quantity;
         }, 0);
         return { orders: pendingOrders, totalPrice, currentUser: AppService.currentUser };
     }
