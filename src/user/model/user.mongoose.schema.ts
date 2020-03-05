@@ -14,7 +14,7 @@ export const UserSchema = new Schema({
         minlength: 5,
     },
     passwordHash: {
-        type: Schema.Types.Number,
+        type: Schema.Types.String,
         required: true,
         trim: true,
         minlength: 1

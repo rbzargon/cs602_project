@@ -1,6 +1,36 @@
 extends ../layout
 
 block content
+    if (currentUser && currentUser.isAdmin)
+        script(type="text/javascript").
+            function toggleAddUserForm() {
+                const addUserButton = document.getElementById('addUserButton');
+                const addUserForm = document.getElementById('addUserForm')
+                if (addUserForm.style.display !== 'none') {
+                    addUserForm.style.display = 'none';
+                    addUserButton.innerText = 'Show Add';
+                } else {
+                    addUserForm.style.display = 'initial';
+                    addUserButton.innerText = 'Hide Add';
+                }
+            }
+        button#addUserButton(onclick='toggleAddUserForm()') Hide Add
+        br
+        form#addUserForm(class="addForm", action="/user", method="post")
+            div
+                label(for="name") Name
+                input#name(type="text", name="name", required) 
+            div
+                label(for="email") Email
+                input#email(type="email", name="email", required)
+            div
+                label(for="password") Password
+                input#password(type="password", name="password", required)
+            div
+                label(for="isAdmin") Administrator
+                input#isAdmin(type="checkbox", name="isAdmin")
+            div
+                input#submitUser(type="submit", value="Add User")
     each user in users
         .card
             p=user.name

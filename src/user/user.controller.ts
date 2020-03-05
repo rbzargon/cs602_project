@@ -1,12 +1,21 @@
-import { Controller, Get, Render, Put, Param } from '@nestjs/common';
-import { UserService } from './user.service';
-import { User } from './model/user.interface';
+import { Controller, Get, Param, Post, Render, Body } from '@nestjs/common';
 import { AppService } from 'src/app.service';
+import { User } from './model/user.interface';
+import { UserService } from './user.service';
+import { CreateUserDto } from './model/create-user.dto';
 
 @Controller('user')
 export class UserController {
 
     constructor(private readonly userService: UserService) { }
+
+    @Post()
+    @Render('user/index')
+    async create(@Body() createUserDto: CreateUserDto) {
+        await this.userService.create(createUserDto);
+        return this.findAll();
+    }
+
 
     @Get()
     @Render('user/index')
