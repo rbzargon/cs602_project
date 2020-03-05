@@ -34,7 +34,23 @@ block content
                 })
             }
         }
-    h2 Total Price: $#{totalPrice}
+        function finalize(currentUserId) {
+            fetch('/order/cart/finalize', {
+                    method: 'PATCH',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        customerId: currentUserId
+                    })
+            }).then(() => {
+                location.href = '/order';
+            })
+        }
+    
+    if (orders && orders.length)
+        h2 Total Price: $#{totalPrice}
+        button(onclick="finalize('" + currentUser._id + "')") Order All
+    else
+        h2 Nothing in your cart
     each o, i in orders  
         .card
             h3 #{o.product.name} - $#{o.product.price} x #{o.quantity}

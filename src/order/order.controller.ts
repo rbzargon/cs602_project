@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Header, Post, Render, Put, Delete, Res } from '@nestjs/common';
+import { Body, Controller, Get, Header, Post, Render, Put, Delete, Res, Patch } from '@nestjs/common';
 import { AppService } from 'src/app.service';
 import { Product } from 'src/product/model/product.interface';
 import { User } from 'src/user/model/user.interface';
@@ -14,10 +14,15 @@ export class OrderController {
     ) { }
 
     @Post()
-    async create(@Body() order: CreateOrderDto, @Res() res) {
+    async create(@Body() order: CreateOrderDto, @Res() response) {
         // CreateOrderDto is validated by the validation pipe in main.ts
         await this.orderService.create(order);
-        return res.redirect('/product');
+        return response.redirect('/product');
+    }
+
+    @Patch('cart/finalize')
+    async finalizeAllCustomerIncomplete(@Body() { customerId }: { customerId: string; }) {
+        await this.orderService.finalizeAllCustomerIncomplete(customerId);
     }
 
     @Get()

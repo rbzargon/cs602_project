@@ -1,7 +1,8 @@
 extends ../layout
 
 block content
-
+    if (!orders || !orders.length)
+        h2 No orders
     each o in orders
         .card
             h2 Order #{o._id}

@@ -1,6 +1,9 @@
 import { Schema } from 'mongoose';
 
 export const OrderSchema = new Schema({
+    completed: {
+        type: Schema.Types.Boolean
+    },
     customer: {
         ref: 'User',
         type: Schema.Types.ObjectId,

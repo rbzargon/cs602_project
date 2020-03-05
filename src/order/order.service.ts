@@ -8,6 +8,7 @@ import { AppService } from 'src/app.service';
 
 @Injectable()
 export class OrderService {
+
     constructor(
         @InjectModel('Order') private readonly orderModel: Model<Order>,
         @InjectModel('Product') private readonly productModel: Model<Product>
@@ -61,7 +62,19 @@ export class OrderService {
     }
 
     // update methods
+    async finalizeAllCustomerIncomplete(customerId: string): Promise<void> {
+        if (!AppService.currentUser) throw Error('No user found');
+        if (customerId !== AppService.currentUser._id.toString() && !AppService.currentUser.isAdmin) {
+            throw Error('User not authorized to finalize orders');
+        }
+        await this.orderModel.updateMany({
+            completed: { $ne: true },
+            customer: customerId.toString(),
+        }, { $set: { completed: true } }).exec();
+    }
+
     async modifyQuantity(id: string, nextQuantity: number): Promise<void> {
+        if (!AppService.currentUser) throw Error('No user found');
         const order = await this.orderModel.findById(id).populate('product').exec() as Order & { product: Product; };
         // Error if the user doesn't match the order, or they aren't admin
         if (order.customer.toString() !== AppService.currentUser._id.toString() && !AppService.currentUser.isAdmin) {
