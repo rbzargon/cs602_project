@@ -10,6 +10,12 @@ import { User } from 'src/user/model/user.interface';
 export class ProductController {
 
     constructor(private readonly productService: ProductService) { }
+    @Post()
+    @Render('product/index')
+    async create(@Body() createProductDto: CreateProductDto) {
+        await this.productService.create(createProductDto);
+        return this.getAll();
+    }
 
     @Get()
     @Header('Content-Type', 'text/html')
@@ -26,10 +32,7 @@ export class ProductController {
         return;
     }
 
-    @Post()
-    async create(@Body() createProductDto: CreateProductDto) {
-        return;
-    }
+    
 
     @Put(':id')
     async update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {

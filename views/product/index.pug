@@ -5,7 +5,40 @@ block content
         label(for="search") Filter by title/description
         input#q(type="text" name="q")
         input(type="submit" value="Go")
-    each p in products
+    if (currentUser && currentUser.isAdmin)
+        script(type="text/javascript").
+            function toggleAddProductForm() {
+                const addProductButton = document.getElementById('addProductButton');
+                const addProductForm = document.getElementById('addProductForm')
+                if (addProductForm.style.display !== 'none') {
+                    addProductForm.style.display = 'none';
+                    addProductButton.innerText = 'Show Add';
+                } else {
+                    addProductForm.style.display = 'initial';
+                    addProductButton.innerText = 'Hide Add';
+                }
+            }
+        button#addProductButton(onclick='toggleAddProductForm()') Hide Add
+        br
+        form#addProductForm(class="addForm",action="product", method="post")
+            input#vendor(type="hidden", name="vendor", value=currentUser._id)
+            div
+                label(for="name") Name
+                input#name(type="text", name="name", required) 
+            div
+                label(for="description") Description
+                input#description(type="text", name="description", required)
+            div
+                label(for="price") Price
+                input#price(type="number", name="price", min=0, step=0.01, required)
+            div
+                label(for="quantity") Initial quantity
+                input#quantity(type="number", name="quantity", min=0, required)
+            div
+                input#submitProduct(type="submit", value="Add Product")
+
+            
+    each p, i in products
         .card
             h2 #{p.name} - $#{p.price}
             p=p.description
@@ -13,8 +46,8 @@ block content
             if currentUser
                 if p.quantity > 0
                     form(action="order", method="post")
-                        input#customer(type="hidden" name="customer" value=(currentUser && currentUser._id))
-                        input#product(type="hidden" name="product" value=p._id)
+                        input(id=("customer"+i), type="hidden" name="customer" value=(currentUser && currentUser._id))
+                        input(id=("product"+i), type="hidden" name="product" value=p._id)
                         label(for="quantity") Quantity
-                        input#quantity(type="number", name="quantity", value=1, min=1)
+                        input(id=("order_quantity"+i), type="number", name="quantity", value=1, min=1)
                         input(type="submit" value="Order")

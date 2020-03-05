@@ -3,12 +3,25 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Product } from './model/product.interface';
 import * as sanitize from 'mongo-sanitize';
+import { CreateProductDto } from './model/create-product.dto';
+import * as escape from 'html-escape';
 
 @Injectable()
 export class ProductService {
     constructor(
         @InjectModel('Product') private readonly productModel: Model<Product>,
     ) { }
+
+    async create(createProductDto: CreateProductDto) {
+        const { name, description, price, quantity, vendor } = createProductDto;
+        await this.productModel.create({
+            name: escape(name),
+            description: escape(description),
+            price,
+            quantity,
+            vendor
+        });
+    }
 
     async findAll(): Promise<Product[]> {
         return this.productModel.find().exec();
@@ -27,10 +40,10 @@ export class ProductService {
     }
 
     async modifyRelativeQuantity(id: string, quantity: number) {
-        const product = await this.productModel.findOne({_id: id}).exec();
+        const product = await this.productModel.findOne({ _id: id }).exec();
         if (product.quantity - quantity < 0)
             throw Error('Insufficient quantity');
-        return this.productModel.updateOne({_id: id}, { $inc: { quantity }})
+        return this.productModel.updateOne({ _id: id }, { $inc: { quantity } });
     }
 
     // async update(product: UpdateProductDto): Promise<Product> {
