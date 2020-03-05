@@ -5,9 +5,11 @@ import { Product } from './model/product.interface';
 import * as sanitize from 'mongo-sanitize';
 import { CreateProductDto } from './model/create-product.dto';
 import * as escape from 'html-escape';
+import { UpdateProductDto } from './model/update-product.dto';
 
 @Injectable()
 export class ProductService {
+
     constructor(
         @InjectModel('Product') private readonly productModel: Model<Product>,
     ) { }
@@ -46,9 +48,8 @@ export class ProductService {
         return this.productModel.updateOne({ _id: id }, { $inc: { quantity } });
     }
 
-    // async update(product: UpdateProductDto): Promise<Product> {
-    //     const {id, description, name, quantity} = product;
-    //     const updates = {description, name, quantity};
-    //     return this.productModel.updateOne({ _id: id }, {$set: {}})
-    // }
+    async update(product: UpdateProductDto) {
+        const { id, ...updates } = product;
+        await this.productModel.updateOne({ _id: id }, { $set: { ...updates } });
+    }
 }

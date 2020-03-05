@@ -40,10 +40,28 @@ block content
             
     each p, i in products
         .card
-            h2 #{p.name} - $#{p.price}
-            p=p.description
-            p Available: #{p.quantity}
-            if currentUser
+            if(currentUser && currentUser.isAdmin)
+                form(class="addForm", action="product/update", method="post")
+                    input(type="hidden" name="id" value=p._id)
+                    div
+                        label(for="name") Name
+                        input(type="text", name="name", value=p.name, required)
+                    div
+                        label(for="Description") Description
+                        textarea(name="description")=p.description
+                    div
+                        label(for="price") Price
+                        input(type="number", name="price", min=0, step=0.01, value=p.price, required)
+                    div
+                        label(for="quantity") Quantity Available
+                        input(type="number", min=0, step=1, name="quantity", value=p.quantity, required)
+                    div
+                        input(type="submit", value="Update")
+            else
+                h2 #{p.name} - $#{p.price}
+                p=p.description
+                p Available: #{p.quantity}
+            if (currentUser && !currentUser.isAdmin)
                 if p.quantity > 0
                     form(action="order", method="post")
                         input(id=("customer"+i), type="hidden" name="customer" value=(currentUser && currentUser._id))

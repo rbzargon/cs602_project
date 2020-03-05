@@ -17,6 +17,13 @@ export class ProductController {
         return this.getAll();
     }
 
+    @Post('update')
+    @Render('product/index')
+    async update(@Body() updateProductDto: UpdateProductDto) {
+        await this.productService.update(updateProductDto);
+        return this.getAll();
+    }
+
     @Get()
     @Header('Content-Type', 'text/html')
     @Render('product/index')
@@ -31,14 +38,7 @@ export class ProductController {
     async getOne(@Param('id') id): Promise<Product> {
         return;
     }
-
-    
-
-    @Put(':id')
-    async update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
-        return;
-    }
-
+   
     @Delete(':id')
     async delete(@Param('id') id: string) {
         return;

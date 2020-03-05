@@ -7,6 +7,11 @@
 
 .card input {
     margin-left: 5px;
-    max-width: 50px;
+    max-width: 100px;
     text-align: center;
+}
+
+.card textarea {
+    margin-left: 5px;
+    max-width: 100px;
 }

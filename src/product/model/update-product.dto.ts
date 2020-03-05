@@ -1,6 +1,7 @@
 
 import { Product } from './product.interface';
-import { IsMongoId, IsString, IsOptional } from 'class-validator';
+import { IsMongoId, IsString, IsOptional, IsNumber } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class UpdateProductDto implements Partial<Product>{
 
@@ -16,6 +17,12 @@ export class UpdateProductDto implements Partial<Product>{
     description?: string;
 
     @IsOptional()
-    @IsString()
+    @IsNumber()
+    @Type(() => Number)
+    price?: number;
+
+    @IsOptional()
+    @IsNumber()
+    @Type(() => Number)
     quantity?: number;
 }
