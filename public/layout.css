@@ -16,3 +16,29 @@ button {
 nav button {
     font-size: 1.5em;
 }
+
+input {
+    margin-left: 5px;
+}
+
+.addForm {
+    max-width: 300px;
+}
+
+.addForm > div {
+    display: flex;
+    max-width: 300px;
+    flex: 1 0 300px;
+    justify-content: space-between;
+    margin: 5px;
+}
+
+.addForm > div:last-of-type {
+    display: flex;
+    max-width: 300px;
+    flex: 1 0 300px;
+    justify-content: center;
+    margin: 5px;
+}
+
+

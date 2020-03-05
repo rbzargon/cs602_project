@@ -7,4 +7,6 @@
 
 .card input {
     margin-left: 5px;
+    max-width: 50px;
+    text-align: center;
 }
