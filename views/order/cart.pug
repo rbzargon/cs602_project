@@ -15,6 +15,21 @@ block content
                         quantity
                     })
                 }).then(() => {
+                    //page reload from the server
+                    location.reload(true);
+                })
+            }
+        }
+        function removeItem(elemIndex) {
+            const orderId = document.getElementById(`orderId${elemIndex}`).value;
+            if (orderId) {
+                fetch('/order/cart', {
+                    method: 'DELETE',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        id: orderId
+                    })
+                }).then(() => {
                     location.reload(true);
                 })
             }
@@ -29,6 +44,6 @@ block content
                 input(id=("quantity" + i), type="number", name="quantity" value=o.quantity, min=1, max=(o.product.quantity + o.quantity))
             input(id=("orderId" + i), type="hidden", name="order", value=o._id)
             button(onclick=("updateQuantity(" + i + ")")) Change
-            form(action=("order/delete/"+ o._id) method="post")
-                input(id=("delete" + i), type="submit", value="Remove item")
-            script(type="text/javascript")
+            br
+            button(onclick=("removeItem(" + i + ")")) Remove item
+

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Header, Post, Render, Put } from '@nestjs/common';
+import { Body, Controller, Get, Header, Post, Render, Put, Delete } from '@nestjs/common';
 import { AppService } from 'src/app.service';
 import { Product } from 'src/product/model/product.interface';
 import { ProductService } from 'src/product/product.service';
@@ -36,10 +36,17 @@ export class OrderController {
 
     @Put('cart')
     @Render('order/cart')
-    async modifyOrderQuantity(@Body() { id, quantity }: { id: string, quantity: number; }) {
+    async modifyQuantity(@Body() { id, quantity }: { id: string, quantity: number; }) {
         if (id && quantity) {
-            await this.orderService.modifyOrderQuantity(id, quantity);
+            await this.orderService.modifyQuantity(id, quantity);
         }
+        return this.findAllIncomplete();
+    }
+
+    @Delete('cart')
+    @Render('order/cart')
+    async removeOrder(@Body() { id }: { id: string; }) {
+        if (id) this.orderService.remove(id);
         return this.findAllIncomplete();
     }
 

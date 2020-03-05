@@ -13,6 +13,11 @@ export class OrderService {
         @InjectModel('Product') private readonly productModel: Model<Product>
     ) { }
 
+    async create(order: CreateOrderDto): Promise<Order> {
+        return this.orderModel.create({ ...order });
+    }
+
+    // read methods
     async findAllCompleteWithProduct(): Promise<Order[] & { product: Product; }[]> {
         if (!AppService.currentUser) return [];
         // see all orders if admin, otherwise just your orders
@@ -31,11 +36,11 @@ export class OrderService {
         return this.orderModel.find(findOptions).populate('product').exec() as unknown as Order[] & { product: Product; }[];
     }
 
-    async modifyOrderQuantity(id: string, nextQuantity: number): Promise<void> {
+    // update methods
+    async modifyQuantity(id: string, nextQuantity: number): Promise<void> {
         const order = await this.orderModel.findById(id).populate('product').exec() as Order & { product: Product; };
         // Error if the user doesn't match the order, or they aren't admin
         if (order.customer.toString() !== AppService.currentUser._id.toString() && !AppService.currentUser.isAdmin) {
-            console.log(order.customer, AppService.currentUser._id);
             throw Error('User not authorized to modify order');
         }
         const currentQuantity = order.quantity;
@@ -49,7 +54,17 @@ export class OrderService {
         await order.updateOne({ quantity: nextQuantity }).exec();
     }
 
-    async create(order: CreateOrderDto): Promise<Order> {
-        return this.orderModel.create({ ...order });
+    //delete methods
+    async remove(id: string) {
+        const order = await this.orderModel.findById(id).populate('product').exec() as Order & { product: Product; };
+        if (order.customer.toString() !== AppService.currentUser._id.toString() && !AppService.currentUser.isAdmin) {
+            console.log(order.customer, AppService.currentUser._id);
+            throw Error('User not authorized to modify order');
+        }
+        const orderQuantity = order.quantity;
+        const product = order.product;
+        await order.remove();
+        await product.updateOne({ $inc: { quantity: orderQuantity } });
     }
+
 }
