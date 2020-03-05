@@ -4,11 +4,13 @@ import { AppService } from 'src/app.service';
 import { ProductSchema } from './model/product.mongoose.schema';
 import { ProductController } from './product.controller';
 import { ProductService } from './product.service';
+import { OrderSchema } from 'src/order/model/order.mongoose.schema';
 
 
 @Module({
     imports: [
         MongooseModule.forFeature([{ name: 'Product', schema: ProductSchema }]),
+        MongooseModule.forFeature([{ name: 'Order', schema: OrderSchema }]),
     ],
     controllers: [ProductController],
     providers: [AppService, ProductService],

@@ -7,6 +7,17 @@ block content
         input(type="submit" value="Go")
     if (currentUser && currentUser.isAdmin)
         script(type="text/javascript").
+            function deleteProduct(productId) {
+                fetch('/product', {
+                    method: 'DELETE',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        id: productId
+                    })
+                }).then(() => {
+                    location.reload(true);
+                })
+            }
             function toggleAddProductForm() {
                 const addProductButton = document.getElementById('addProductButton');
                 const addProductForm = document.getElementById('addProductForm')
@@ -57,6 +68,7 @@ block content
                         input(type="number", min=0, step=1, name="quantity", value=p.quantity, required)
                     div
                         input(type="submit", value="Update")
+                button(onclick=("deleteProduct('" + p._id + "')")) Delete product
             else
                 h2 #{p.name} - $#{p.price}
                 p=p.description

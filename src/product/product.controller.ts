@@ -20,7 +20,10 @@ export class ProductController {
     @Post('update')
     @Render('product/index')
     async update(@Body() updateProductDto: UpdateProductDto) {
-        await this.productService.update(updateProductDto);
+        // TODO: Future development could allow the vendor to modify
+        // not just admin
+        if (AppService.currentUser && AppService.currentUser.isAdmin)
+            await this.productService.update(updateProductDto);
         return this.getAll();
     }
 
@@ -34,13 +37,9 @@ export class ProductController {
         return { products, currentUser: AppService.currentUser };
     }
 
-    @Get(':id')
-    async getOne(@Param('id') id): Promise<Product> {
-        return;
-    }
-   
-    @Delete(':id')
-    async delete(@Param('id') id: string) {
-        return;
+    @Delete()
+    async delete(@Body() { id }: { id: string; }) {
+        if (id && AppService.currentUser && AppService.currentUser.isAdmin)
+            await this.productService.remove(id);
     }
 }

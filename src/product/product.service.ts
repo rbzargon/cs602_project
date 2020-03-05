@@ -6,17 +6,19 @@ import * as sanitize from 'mongo-sanitize';
 import { CreateProductDto } from './model/create-product.dto';
 import * as escape from 'html-escape';
 import { UpdateProductDto } from './model/update-product.dto';
+import { Order } from 'src/order/model/order.interface';
 
 @Injectable()
 export class ProductService {
 
     constructor(
         @InjectModel('Product') private readonly productModel: Model<Product>,
+        @InjectModel('Order') private readonly orderModel: Model<Order>
     ) { }
 
     async create(createProductDto: CreateProductDto) {
         const { name, description, price, quantity, vendor } = createProductDto;
-        await this.productModel.create({
+        return this.productModel.create({
             name: escape(name),
             description: escape(description),
             price,
@@ -50,6 +52,12 @@ export class ProductService {
 
     async update(product: UpdateProductDto) {
         const { id, ...updates } = product;
-        await this.productModel.updateOne({ _id: id }, { $set: { ...updates } });
+        return this.productModel.updateOne({ _id: id }, { $set: { ...updates } }).exec();
+    }
+
+    async remove(id: string) {
+        await this.productModel.deleteOne({ _id: id });
+        //cascade deletion to orders with the product
+        await this.orderModel.deleteMany({ product: id });
     }
 }
