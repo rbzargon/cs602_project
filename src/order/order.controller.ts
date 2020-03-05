@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Header, Post, Render } from '@nestjs/common';
+import { Body, Controller, Get, Header, Post, Render, Put } from '@nestjs/common';
 import { AppService } from 'src/app.service';
 import { Product } from 'src/product/model/product.interface';
 import { ProductService } from 'src/product/product.service';
@@ -18,7 +18,7 @@ export class OrderController {
     @Get()
     @Header('Content-Type', 'text/html')
     @Render('order/index')
-    async findAllComplete(): Promise<{ orders: Order[]; currentUser: User }> {
+    async findAllComplete(): Promise<{ orders: Order[]; currentUser: User; }> {
         const completeOrders = await this.orderService.findAllCompleteWithProduct();
         return { orders: completeOrders, currentUser: AppService.currentUser };
     }
@@ -26,12 +26,21 @@ export class OrderController {
     @Get('cart')
     @Header('Content-Type', 'text/html')
     @Render('order/cart')
-    async findAllIncomplete(): Promise<{ orders: Order[]; totalPrice: number; currentUser: User }> {
+    async findAllIncomplete(): Promise<{ orders: Order[]; totalPrice: number; currentUser: User; }> {
         const pendingOrders = await this.orderService.findAllIncompleteWithProduct();
-        const totalPrice = pendingOrders.reduce((total, order: Order & { product: Product }) => {
+        const totalPrice = pendingOrders.reduce((total, order: Order & { product: Product; }) => {
             return total += order.product.price * order.quantity;
         }, 0);
         return { orders: pendingOrders, totalPrice, currentUser: AppService.currentUser };
+    }
+
+    @Put('cart')
+    @Render('order/cart')
+    async modifyOrderQuantity(@Body() { id, quantity }: { id: string, quantity: number; }) {
+        if (id && quantity) {
+            await this.orderService.modifyOrderQuantity(id, quantity);
+        }
+        return this.findAllIncomplete();
     }
 
     @Post()

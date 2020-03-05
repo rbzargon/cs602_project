@@ -31,6 +31,24 @@ export class OrderService {
         return this.orderModel.find(findOptions).populate('product').exec() as unknown as Order[] & { product: Product; }[];
     }
 
+    async modifyOrderQuantity(id: string, nextQuantity: number): Promise<void> {
+        const order = await this.orderModel.findById(id).populate('product').exec() as Order & { product: Product; };
+        // Error if the user doesn't match the order, or they aren't admin
+        if (order.customer.toString() !== AppService.currentUser._id.toString() && !AppService.currentUser.isAdmin) {
+            console.log(order.customer, AppService.currentUser._id);
+            throw Error('User not authorized to modify order');
+        }
+        const currentQuantity = order.quantity;
+        const relativeQuantityChange = nextQuantity - currentQuantity;
+        if (relativeQuantityChange === 0) return;
+        if (relativeQuantityChange > order.product.quantity) {
+            throw Error('Insufficient available product');
+        }
+        // Update the product and order quantities
+        await order.product.updateOne({ $inc: { quantity: -relativeQuantityChange } });
+        await order.updateOne({ quantity: nextQuantity }).exec();
+    }
+
     async create(order: CreateOrderDto): Promise<Order> {
         return this.orderModel.create({ ...order });
     }

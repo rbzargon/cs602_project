@@ -7,13 +7,13 @@ block content
             const quantity = parseInt(quantityElem.value, 10);
             const orderId = document.getElementById(`orderId${elemIndex}`).value;
             if (quantity && orderId) {
-                console.log(quantity, orderId);
                 fetch('/order/cart', {
                     method: 'PUT',
-                    body: {
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
                         id: orderId,
                         quantity
-                    }
+                    })
                 }).then(() => {
                     location.reload(true);
                 })
@@ -23,7 +23,7 @@ block content
     each o, i in orders  
         .card
             h3 #{o.product.name} - $#{o.product.price} x #{o.quantity}
-            p Item(s) price: #{o.product.price * o.quantity}
+            p Item(s) price: $#{o.product.price * o.quantity}
             p Maximum available: #{o.product.quantity + o.quantity}
             label(for="quantity") Quantity
                 input(id=("quantity" + i), type="number", name="quantity" value=o.quantity, min=1, max=(o.product.quantity + o.quantity))
