@@ -9,11 +9,14 @@ html
         nav
             a(href="/product")
                 button Products
-            if currentUser
+            if (currentUser && !currentUser.isAdmin)
                 a(href="/order/cart")
                     button Cart
                 a(href="/order")
                     button Orders
+            if (currentUser && currentUser.isAdmin)
+                a(href="/user/customer")
+                    button Customers
             a(href="/user")
                 button Accounts
 

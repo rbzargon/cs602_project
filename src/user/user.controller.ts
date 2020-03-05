@@ -1,8 +1,10 @@
-import { Controller, Get, Param, Post, Render, Body } from '@nestjs/common';
+import { Controller, Get, Param, Post, Render, Body, Res } from '@nestjs/common';
 import { AppService } from 'src/app.service';
 import { User } from './model/user.interface';
 import { UserService } from './user.service';
 import { CreateUserDto } from './model/create-user.dto';
+import { Order } from 'src/order/model/order.interface';
+import { Product } from 'src/product/model/product.interface';
 
 @Controller('user')
 export class UserController {
@@ -23,6 +25,16 @@ export class UserController {
         const users = await this.userService.findAll();
         return { users, currentUser: AppService.currentUser };
     };
+
+    @Get('/customer')
+    @Render('customer/index')
+    async findAllCustomersWithOrders(@Res() res): Promise<{ users: User[] & { orders: Order[] & { product: Product; }[]; }; currentUser: User; }> {
+        if (!AppService.currentUser || !AppService.currentUser.isAdmin) res.redirect('/user');
+        // populate customers with orders, populated with product
+        const users = await this.userService.findAllCustomersWithPendingOrders();
+        console.log(JSON.stringify(users, null, 2));
+        return { users, currentUser: AppService.currentUser };
+    }
 
     @Get('impersonate/:id')
     @Render('user/index')

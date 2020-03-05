@@ -1,0 +1,52 @@
+extends ../layout
+
+block content
+    if (currentUser && currentUser.isAdmin)
+        script(type="text/javascript").
+            function updateQuantity(i,j) {
+                const quantityElem = document.getElementById(`quantity${i}_${j}`);
+                const quantity = parseInt(quantityElem.value, 10);
+                const orderId = document.getElementById(`orderId${i}_${j}`).value;
+                if (quantity && orderId) {
+                    fetch('/order/cart', {
+                        method: 'PUT',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            id: orderId,
+                            quantity
+                        })
+                    }).then(() => {
+                        //page reload from the server
+                        location.reload(true);
+                    })
+                }
+            }
+            function removeItem(i,j) {
+                const orderId = document.getElementById(`orderId${i}_${j}`).value;
+                if (orderId) {
+                    fetch('/order/cart', {
+                        method: 'DELETE',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            id: orderId
+                        })
+                    }).then(() => {
+                        location.reload(true);
+                    })
+                }
+            }
+        each user, i in users
+            .card
+                h2=user.name
+                p=user.email    
+                h3 Orders in cart
+                each o, j in user.orders
+                    h4 #{o.product.name} - $#{o.product.price} x #{o.quantity}
+                    p Item(s) price: $#{o.product.price * o.quantity}
+                    p Maximum available: #{o.product.quantity + o.quantity}
+                    label(for="quantity") Quantity
+                        input(id=("quantity" + i + '_'+ j), type="number", name="quantity" value=o.quantity, min=1, max=(o.product.quantity + o.quantity))
+                    input(id=("orderId" + i + '_'+ j), type="hidden", name="order", value=o._id)
+                    button(onclick=("updateQuantity(" + i + ',' + j + ")")) Change
+                    br
+                    button(onclick=("removeItem(" + i + ',' + j + ")")) Remove item
