@@ -13,7 +13,7 @@ block content
             if currentUser
                 if p.quantity > 0
                     form(action="order", method="post")
-                        input#customer(type="hidden" name="customer" value=currentUserId)
+                        input#customer(type="hidden" name="customer" value=(currentUser && currentUser._id))
                         input#product(type="hidden" name="product" value=p._id)
                         label(for="quantity") Quantity
                         input#quantity(type="number", name="quantity", value=1, min=1)

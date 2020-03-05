@@ -1,7 +1,6 @@
-import { Body, Controller, Get, Header, Post, Render, Put, Delete } from '@nestjs/common';
+import { Body, Controller, Get, Header, Post, Render, Put, Delete, Res } from '@nestjs/common';
 import { AppService } from 'src/app.service';
 import { Product } from 'src/product/model/product.interface';
-import { ProductService } from 'src/product/product.service';
 import { User } from 'src/user/model/user.interface';
 import { CreateOrderDto } from './model/create-order.dto';
 import { Order } from './model/order.interface';
@@ -12,8 +11,14 @@ export class OrderController {
 
     constructor(
         private readonly orderService: OrderService,
-        private readonly productService: ProductService,
     ) { }
+
+    @Post()
+    async create(@Body() order: CreateOrderDto, @Res() res) {
+        // CreateOrderDto is validated by the validation pipe in main.ts
+        await this.orderService.create(order);
+        return res.redirect('/product');
+    }
 
     @Get()
     @Header('Content-Type', 'text/html')
@@ -48,12 +53,6 @@ export class OrderController {
     async removeOrder(@Body() { id }: { id: string; }) {
         if (id) this.orderService.remove(id);
         return this.findAllIncomplete();
-    }
-
-    @Post()
-    async create(@Body() order: CreateOrderDto) {
-        await this.orderService.create(order);
-        await this.productService.modifyRelativeQuantity(order.product, order.quantity);
     }
 
 }

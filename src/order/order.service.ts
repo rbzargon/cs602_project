@@ -13,8 +13,32 @@ export class OrderService {
         @InjectModel('Product') private readonly productModel: Model<Product>
     ) { }
 
-    async create(order: CreateOrderDto): Promise<Order> {
-        return this.orderModel.create({ ...order });
+    async create(order: CreateOrderDto): Promise<void> {
+        if (order.customer.toString() !== AppService.currentUser._id.toString() && !AppService.currentUser.isAdmin) {
+            throw Error('User not authorized to create order');
+        }
+
+        const product = await this.productModel.findById(order.product).exec();
+
+        if (!product) throw Error('Product not found');
+        if (product.quantity < order.quantity) {
+            throw Error('Insufficient available product');
+        }
+
+        await product.updateOne({ $inc: { quantity: -order.quantity } }).exec();
+
+        const existingOrderWithProduct = await this.orderModel.findOne({
+            completed: { $ne: true },
+            customer: AppService.currentUser._id.toString(),
+            product: product._id
+        }).exec();
+
+        // We may actually need to only update an order instead of creating one
+        if (existingOrderWithProduct) {
+            await existingOrderWithProduct.updateOne({ $inc: { quantity: order.quantity } }).exec();
+        } else {
+            await this.orderModel.create({ ...order });
+        }
     }
 
     // read methods
@@ -58,7 +82,6 @@ export class OrderService {
     async remove(id: string) {
         const order = await this.orderModel.findById(id).populate('product').exec() as Order & { product: Product; };
         if (order.customer.toString() !== AppService.currentUser._id.toString() && !AppService.currentUser.isAdmin) {
-            console.log(order.customer, AppService.currentUser._id);
             throw Error('User not authorized to modify order');
         }
         const orderQuantity = order.quantity;
