@@ -6,7 +6,7 @@ import { CreateProductDto } from "./model/create-product.dto";
 import { Product } from './model/product.interface';
 import { UpdateProductDto } from "./model/update-product.dto";
 import { ProductService } from './product.service';
-import { json2xml } from 'xml-js';
+import * as xml from 'xml';
 
 @Controller('/product')
 export class ProductController {
@@ -64,11 +64,8 @@ export class ProductController {
             ...(!isNaN(maxPrice) ? { maxPrice } : {})
         };
         const products = await this.productService.findByOptions(findOptions);
-        const xml = json2xml(
-            JSON.stringify({ products: products.map(product => ({ product })) }),
-            { compact: true }
-        );
-        return xml;
+        const xmlStr = xml({ products: products.map(product => ({ product: { _attr: product } })) });
+        return xmlStr;
     }
 
     @Delete()
