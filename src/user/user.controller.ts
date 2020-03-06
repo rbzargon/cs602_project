@@ -32,7 +32,6 @@ export class UserController {
         if (!AppService.currentUser || !AppService.currentUser.isAdmin) res.redirect('/user');
         // populate customers with orders, populated with product
         const users = await this.userService.findAllCustomersWithPendingOrders();
-        console.log(JSON.stringify(users, null, 2));
         return { users, currentUser: AppService.currentUser };
     }
 

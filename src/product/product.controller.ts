@@ -63,14 +63,11 @@ export class ProductController {
             ...(!isNaN(minPrice) ? { minPrice } : {}),
             ...(!isNaN(maxPrice) ? { maxPrice } : {})
         };
-        console.log(minPrice)
         const products = await this.productService.findByOptions(findOptions);
         const xml = json2xml(
             JSON.stringify({ products: products.map(product => ({ product })) }),
             { compact: true, spaces: 2 }
         );
-        console.log(products);
-        console.log(xml);
         return xml;
     }
 
