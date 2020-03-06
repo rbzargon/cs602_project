@@ -83,7 +83,8 @@ export class ProductService {
 
     async remove(id: string) {
         await this.productModel.deleteOne({ _id: id });
-        //cascade deletion to orders with the product
+        // cascade deletion to orders with the product
+        // could disable if desired - order template now handles missing products
         await this.orderModel.deleteMany({ product: id });
     }
 }
