@@ -6,8 +6,11 @@ block content
     each o in orders
         .card
             h2 Order #{o._id}
-            p Product: #{o.product.name}
-            p Price: #{o.product.price}
+            if o.product
+                p Product: #{o.product.name}
+                p Price: #{o.product.price}
+            else
+                p (Deleted product)
             p Quantity: #{o.quantity}
             //- theoretically the price/name could change in the future
             //- a more robust application might memorialize the name/price
