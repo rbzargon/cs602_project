@@ -6,7 +6,7 @@ import { CreateProductDto } from "./model/create-product.dto";
 import { Product } from './model/product.interface';
 import { UpdateProductDto } from "./model/update-product.dto";
 import { ProductService } from './product.service';
-import {json2xml} from 'xml-js';
+import { json2xml } from 'xml-js';
 
 @Controller('/product')
 export class ProductController {
@@ -66,7 +66,7 @@ export class ProductController {
         const products = await this.productService.findByOptions(findOptions);
         const xml = json2xml(
             JSON.stringify({ products: products.map(product => ({ product })) }),
-            { compact: true, spaces: 2 }
+            { compact: true }
         );
         return xml;
     }
