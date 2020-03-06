@@ -31,16 +31,42 @@ export class ProductService {
         return this.productModel.find().exec();
     }
 
-    async findByText(searchText: string): Promise<Product[]> {
+    async findByText(queryText: string): Promise<Product[]> {
         //help prevent nosql injection
-        searchText = sanitize(searchText);
+        queryText = sanitize(queryText);
         //find and sort by match on the text index
         //which includes both the title and description (compound index)
         //see https://docs.mongodb.com/manual/core/index-text/#create-text-index
         return this.productModel.find(
-            { $text: { $search: searchText } },
+            { $text: { $search: queryText } },
             { score: { $meta: 'textScore' } },
         ).sort({ score: { $meta: 'textScore' } });
+    }
+
+    async findByOptions({ queryText, minPrice, maxPrice }: { queryText?: string; minPrice?: number; maxPrice?: number; }) {
+        let findOptions = {};
+        if (queryText) findOptions = { ...findOptions, $text: { $search: queryText } };
+        if (minPrice && maxPrice) {
+            findOptions = {
+                ...findOptions,
+                $and: [
+                    { price: { $gt: minPrice } },
+                    { price: { $lt: maxPrice } }
+                ]
+            };
+        } else if (minPrice) {
+            findOptions = {
+                ...findOptions,
+                price: { $gt: minPrice }
+            };
+        } else if (maxPrice) {
+            findOptions = {
+                ...findOptions,
+                price: { $lt: maxPrice }
+            };
+        }
+        const products = this.productModel.find(findOptions).exec();
+        return (await products).map(p => p.toObject());
     }
 
     async modifyRelativeQuantity(id: string, quantity: number) {

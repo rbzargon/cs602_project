@@ -35,7 +35,8 @@
     "pug": "^2.0.4",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.0",
-    "rxjs": "^6.5.4"
+    "rxjs": "^6.5.4",
+    "xml-js": "^1.6.11"
   },
   "devDependencies": {
     "@nestjs/cli": "^6.13.2",
